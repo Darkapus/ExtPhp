@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Store
+END
+JsonStorage.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Store/JsonStorage.php
+END
+SimpleStorage.php
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Store/SimpleStorage.php
+END
+ArrayStorage.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Store/ArrayStorage.php
+END
+Storage.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Store/Storage.php
+END
