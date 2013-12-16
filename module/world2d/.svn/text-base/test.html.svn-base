@@ -1,0 +1,32 @@
+<html>
+<head>
+    <script src='js/Box2dWeb-2.1.a.3.min.js' type="text/javascript"></script>
+<script type="text/javascript">
+function init()
+{
+    var element_52acb669935ba = new Box2D.Common.Math.b2Vec2(0,0);
+    var element_52acb66993555 = new Box2D.Dynamics.b2World(element_52acb669935ba,true);
+    var element_52acb66993623 = new Box2D.Dynamics.b2BodyDef();
+    element_52acb66993623.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
+    var element_52acb669936dc = new Box2D.Dynamics.b2FixtureDef();
+    element_52acb669936dc.density = 1;
+    element_52acb669936dc.friction = 0.5;
+    element_52acb669936dc.restitution = 0.2;
+    var element_52acb6699368c = new Box2D.Collision.Shapes.b2CircleShape(10);
+    element_52acb669936dc.shape = element_52acb6699368c;
+    element_52acb66993555.CreateBody(element_52acb66993623).CreateFixture(element_52acb669936dc);
+    var debugDraw = new Box2D.Dynamics.b2DebugDraw();
+    debugDraw.SetSprite(document.getElementById("test").getContext("2d"));
+    debugDraw.SetDrawScale(30.0);
+    debugDraw.SetFillAlpha(0.3);
+    debugDraw.SetLineThickness(1.0);
+    debugDraw.SetFlags(Box2D.Dynamics.b2DebugDraw.e_shapeBit | Box2D.Dynamics.b2DebugDraw.e_jointBit);
+    element_52acb66993555.SetDebugDraw(debugDraw);
+}
+</script>
+</head>
+<body onload='init()'>
+    <canvas id='test'></canvas>
+
+</body>
+</html>

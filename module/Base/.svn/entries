@@ -1,7 +1,7 @@
 10
 
 dir
-684
+733
 http://37.187.16.213/projects/ExtPhp/module/Base
 http://37.187.16.213/projects
 
@@ -25,15 +25,6 @@ bbaschet
 
 
 2125b505-1244-45b1-81de-26c4fc8e3808
-
-Model
-dir
-
-Controller
-dir
-
-config
-dir
 
 view
 dir
@@ -71,4 +62,13 @@ bbaschet
 
 
 1248
+
+Model
+dir
+
+Controller
+dir
+
+config
+dir
 

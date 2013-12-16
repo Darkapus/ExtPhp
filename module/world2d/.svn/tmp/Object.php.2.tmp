@@ -1,0 +1,105 @@
+<?php
+class Object
+{
+	protected $content;
+	protected $varname;
+	protected $class;
+	protected $attributes 	= array();
+	protected $arguments 	= array();
+	protected $rendered	= false;
+        protected $methods      = array();
+	public function __construct()
+	{
+		$this->setVarName(uniqid('element_'));
+	}
+	public function __toString()
+	{
+		return $this->getVarName();
+	}
+	public function setClass($class)
+	{
+		$this->class= $class;
+		return $this;
+	}
+	public function getClass()
+	{
+		return $this->class;
+	}
+	public function setVarName($name)
+	{
+		$this->varname = $name;
+		return $this;
+	}
+	public function getVarName()
+	{
+		return $this->varname;
+	}
+	protected function preRender()
+	{
+		return $this;
+	}
+	public function render()
+	{
+		if(!$this->rendered)
+		{
+			$this->preRender();
+			echo 'var '.$this.' = new '.$this->getClass().'('.implode(',', $this->getArguments()).');'.RC;
+			foreach($this->getAttributes() as $k=>$v)
+			{
+                            if(is_object($v))
+                            {
+                                $v->render();
+                            }
+                            echo "$this.$k = $v;".RC;
+			}
+var_dump($this->getMethods());
+                        foreach($this->getMethods() as $method){
+				echo 'toto'.RC;
+                            foreach($method->getArguments() as $arg){
+                                if(is_object($arg)){
+                                    $arg->render();
+                                }
+                            }
+                            echo "$this.".$method->getCode().RC;
+                        }
+			$this->postRender();
+			$this->rendered = true; // pour ne pas rendre deux fois l'objet
+		}
+	}
+	public function setArguments()
+	{
+		$this->arguments = func_get_args();
+		return $this;
+	}
+	public function getArguments()
+	{
+		return $this->arguments;
+	}
+	protected function postRender()
+	{
+		return $this;
+	}
+	public function getAttributes()
+	{
+		return $this->attributes;
+	}
+	public function setAttribute($k, $v, $o=false)
+	{
+		$this->attributes[$k] = $o?$v:"'$v'";
+		return $this;
+	}
+        public function getMethods()
+        {
+            return $this->methods;
+        }
+        public function addMethod(Action $action)
+        {
+            $this->methods[] = $action;
+            return $this;
+        }
+            
+        public function getAttribute($k)
+        {
+            return $this->attributes[$k];
+        }
+}
