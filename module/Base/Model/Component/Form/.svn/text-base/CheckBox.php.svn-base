@@ -9,7 +9,7 @@ class CheckBox extends AbstractInput
 {
 	public function __construct($label, $name, $checked=false)
 	{
-		parent::__construct();
+		parent::__construct(null, $name, null);
 		$this->setLibrary('Ext.form.field.Checkbox');
 		
 		//$this->addAttribute('xtype', 'checkbox');

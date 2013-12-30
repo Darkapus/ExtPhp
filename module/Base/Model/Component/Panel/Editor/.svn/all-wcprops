@@ -1,19 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 70
-/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Panel/Editor
-END
-RowEditing.php
-K 25
-svn:wc:ra_dav:version-url
-V 85
-/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Panel/Editor/RowEditing.php
+/projects/!svn/ver/786/ExtPhp/module/Base/Model/Component/Panel/Editor
 END
 Column.php
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Panel/Editor/Column.php
+/projects/!svn/ver/786/ExtPhp/module/Base/Model/Component/Panel/Editor/Column.php
 END
 CellEditing.php
 K 25
@@ -26,4 +20,10 @@ K 25
 svn:wc:ra_dav:version-url
 V 90
 /projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Panel/Editor/AbstractEditing.php
+END
+RowEditing.php
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/projects/!svn/ver/683/ExtPhp/module/Base/Model/Component/Panel/Editor/RowEditing.php
 END

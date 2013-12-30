@@ -3,7 +3,11 @@ namespace Base\Model\Component\Panel;
 use Base\Model\Component\Core\ExtGenerator;
 
 use Base\Model\Component\Core\Container;
-
+/**
+ * 
+ * @author bbaschet
+ *
+ */
 class StatusBar extends Container
 {
 	public function __construct()

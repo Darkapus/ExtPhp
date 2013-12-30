@@ -25,16 +25,20 @@ class Panel extends Container
 	 * 
 	 * @param string $title
 	 */
-	public function __construct($title)
+	public function __construct($title='')
 	{
 		parent::__construct();
 		$this->setLibrary('Ext.panel.Panel');
 		$this->addOption('title', $title);
 		ExtGenerator::i()->addRequire('Ext.panel.Panel');
-		$this->setLayout('fit');
+		$this->setLayout('auto');
 		$this->setBorder(false);
 		$this->addOption('buttons', array(), true);
-		
+		$this->addEvent('expand', 'p, eOpts');
+		$this->addEvent('collapse', 'p, eOpts');
+		$this->addEvent('beforecollapse', 'p, direction, animate, eOpts');
+		$this->addEvent('beforeexpand', 'p, animate, eOpts');
+		$this->addEvent('remove', 'p, component, eOpts');
 	}
 	/**
 	 * 
@@ -146,6 +150,14 @@ class Panel extends Container
 			$button->render();
 		}
 		return parent::preRender();
+	}
+	public function bToggleCollapse()
+	{
+		return new Behavior("$this.toggleCollapse()");
+	}
+	public function bExpand()
+	{
+		return new Behavior("$this.expand()");
 	}
 	public function bCollapse()
 	{

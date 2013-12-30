@@ -43,7 +43,7 @@ class ExtGenerator
 		
 		if(is_null($partial))  echo '<script type="text/javascript">'.RC;
 		if(is_null($partial))  echo "Ext.Loader.setConfig({enabled: true});".RC;
-		if(is_null($partial))  echo "Ext.Loader.setPath('Ext.ux', '/js/extjs4.0.7/examples/ux');".RC;
+		if(is_null($partial))  echo "Ext.Loader.setPath('Ext.ux', '/js/ext-4.2.1/examples/ux');".RC;
 		foreach($this->getGlobals() as $global)
 		{
 			echo "var $global;".RC;
@@ -55,12 +55,12 @@ class ExtGenerator
 		//else echo '$(function(){'.RC;
 		
 		if(!is_null($where)) $element->addOption('renderTo', $where);
-		elseif(is_null($partial)) $element->addOption('renderTo', 'Ext.getBody()', true);
+		elseif(is_null($partial) || $partial=='true') $element->addOption('renderTo', 'Ext.getBody()', true);
 		
 		$element->render();
 		
 		if(is_null($partial))  echo '})'.RC;
-		if(!is_null($partial)) echo "$partial.add($element);";
+		if(!is_null($partial) && $partial!='true') echo "$partial.add($element);";
 		if(is_null($partial))  echo '</script>';
 	}
 	public function bConfirm($title, $text, $yes, $no)
@@ -69,7 +69,7 @@ class ExtGenerator
 	}
 	public function bBlock()
 	{
-		$behavior = new Behavior(implode('',func_get_args()));
+		$behavior = new Behavior(implode(';',func_get_args()));
 		return $behavior;
 	}
 	public function bLoad($url, $method='POST', Config $params=null, Behavior $success=null, Behavior $failure=null)

@@ -11,7 +11,7 @@ class AbstractInput extends Element
 	{
 		parent::__construct();
 		$this->addOption('name', $name);
-		$this->addOption('fieldLabel', $label);
+		$label&&$this->addOption('fieldLabel', $label);
 		$this->addOption('labelWidth', 150, true);
 		$value && $this->setValue($value);
 		$this->addEvent('focus','');

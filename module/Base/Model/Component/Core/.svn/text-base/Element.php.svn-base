@@ -11,13 +11,13 @@ class Element
 	protected $is_render = false;
 	public function __construct($id=null)
 	{
-		DEV && error_log('Invocation de '.get_called_class());
+		getenv('APPLICATION_ENV')=='development'  && error_log('Invocation de '.get_called_class());
 		
 		$this->config 	= new Config();
 		if(!is_null($id)) $this->setId($id);
 		else $this->setId(uniqid('element_'));
 		
-		DEV && error_log('Identifiant : '.$this->getId());
+		getenv('APPLICATION_ENV')=='development'  && error_log('Identifiant : '.$this->getId());
 		
 		$this->listeners= new Config();
 		$this->addOption('listeners', $this->getListeners(), true);
@@ -26,6 +26,7 @@ class Element
 		$this->addEvent('render', 'element, eOpts');
 		$this->addEvent('afterrender', 'element, eOpts');
 	}
+	
 	public function setGlobal()
 	{
 		ExtGenerator::i()->addGlobal($this);
@@ -100,7 +101,7 @@ class Element
 	{
 		if(!$this->isRender())
 		{
-			DEV && error_log('Rendu de '.get_called_class().' en cours ...');
+			getenv('APPLICATION_ENV')=='development'  && error_log('Rendu de '.get_called_class().' en cours ...');
 			// pre rendu
 			$this->preRender();
 			echo ''.$this->getId().' = new '.$this->getLibrary().'('.RC;
@@ -112,7 +113,7 @@ class Element
 			
 			// on ne rend pas deux fois le meme objet
 			$this->setRender(true);
-			DEV && error_log('Rendu de '.get_called_class().' done');
+			getenv('APPLICATION_ENV')=='development'  && error_log('Rendu de '.get_called_class().' done');
 		}
 	}
 	public function getEvents()
@@ -139,6 +140,9 @@ class Element
 	{
 		return $this->listeners;
 	}
+	public function bFire($name){
+		return new Behavior("$this.fireEvent('$name')");
+	}
 	/**
 	 * gestion des evenements ici
 	 * @param string $name
@@ -147,12 +151,25 @@ class Element
 	 */
 	public function on($name, Behavior $behavior)
 	{
-		$this->getListeners()->addAttribute($name, "function(".$this->getEventAttributes($name)."){ $behavior; }", true);
+		if(property_exists($this->getListeners(), $name))
+		{
+			$behavior = str_replace('; }', ';'.$behavior.'; }', $this->getListeners()->$name);
+			$this->getListeners()->setAttribute($name, $behavior, true);
+		}
+		else
+		{
+			$this->getListeners()->addAttribute($name, "function(".$this->getEventAttributes($name)."){ $behavior; }", true);
+		}
 		return $this;		
 	}
 	public function addRequire($require)
 	{
 		ExtGenerator::i()->addRequire($require);
 		return $this;
+	}
+	
+	public function bHide()
+	{
+		return new Behavior($this.'.hide()');
 	}
 }

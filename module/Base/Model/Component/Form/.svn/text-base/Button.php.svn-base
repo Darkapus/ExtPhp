@@ -1,6 +1,8 @@
 <?php
 namespace Base\Model\Component\Form;
 
+use Base\Model\Component\Core\Behavior;
+
 use Base\Model\Component\Core\Action;
 
 use Base\Model\Component\Core\ExtGenerator;
@@ -18,6 +20,22 @@ class Button extends Element
 		ExtGenerator::i()->addRequire('Ext.button.Button');
 		$this->addEvent('click', 'button, e, eOpts');
 		
+		$this->on('click', $this->bBlur());
 		$action && $this->on('click', $action->bDo());
+		
+		
+	}
+	public function bGetText()
+	{
+		return new Behavior("$this.getText()");
+	}
+	public function bSetText($value)
+	{
+		if(!is_object($value)) $value = "'$value'";
+		return new Behavior("$this.setText($value)");
+	}
+	public function bBlur()
+	{
+		return new Behavior("$this.blur()");
 	}
 }

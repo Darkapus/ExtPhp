@@ -1,6 +1,8 @@
 <?php 
 namespace Base\Model\Component\Panel;
 
+use Zend\XmlRpc\Value\ArrayValue;
+
 use Base\Model\Component\Core\Behavior;
 
 use Base\Model\Component\Panel\Editor\Column;
@@ -16,13 +18,17 @@ use Base\Model\Component\Store\Storage;
 use Base\Model\Component\Core\ExtGenerator;
 
 use Base\Model\Component\Core\Container;
-
+/**
+ * 
+ * @author bbaschet
+ *
+ */
 class Grid extends Panel
 {
 	protected $flex;
 	protected $store;
 	protected $columns = array();
-	
+	protected $filters = array();
 	protected $paging = false;
 	protected $features = array();
 	protected $group = false;
@@ -31,9 +37,9 @@ class Grid extends Panel
 	 * @param Storage $store
 	 * @param string $title
 	 */
-	public function __construct(Storage $store, $title = null)
+	public function __construct(Storage $store, $title = '')
 	{
-		parent::__construct();
+		parent::__construct($title);
 		$this->setStore($store);
 		$this->setLibrary('Ext.grid.Panel');
 		
@@ -49,9 +55,11 @@ class Grid extends Panel
 		if(!is_null($title)) $this->addOption('title',$title);
 		$this->addOption('padding', 0, true);
 		$this->addOption('margin', 0, true);
+		$this->setLayout('fit');
 		//ExtGenerator::i()->addRequire('Ext.toolbar.Paging');
 		//ExtGenerator::i()->addRequire('Ext.ux.ajax.JsonSimlet');
 		//ExtGenerator::i()->addRequire('Ext.ux.ajax.SimManager');
+		
 		
 		ExtGenerator::i()->addRequire('Ext.grid.*');
 	}
@@ -150,7 +158,7 @@ class Grid extends Panel
 	 */
 	public function addColumn($header,	$dataIndex, $width=null)
 	{
-		$col = new Column();
+		$col = new Column($this);
 		$col->addAttribute('header', $header);
 		$col->addAttribute('dataIndex', $dataIndex);
 		
@@ -163,14 +171,48 @@ class Grid extends Panel
 		return $col;
 	}
 	/**
+	 * Permet de définir des filtres sur une colonne
+	 * @param Column $col
+	 * @param string $type
+	 */
+	public function addFilter(Column $col, $type)
+	{
+		ExtGenerator::i()->addRequire('Ext.ux.grid.FiltersFeature');
+		if(property_exists($col, 'dataIndex'))
+		{
+			$c = new Config();
+			$c->addAttribute('type', $type);
+			$c->addAttribute('dataIndex', $col->dataIndex, true);
+			$this->filters[] = $c;
+		}
+		return $this;
+	}
+	/**
+	 * retourne la lsite des filtre sous forme de tableau
+	 * @return Array
+	 */
+	public function getFilters()
+	{
+		return $this->filters;
+	}
+	/**
 	 * (non-PHPdoc)
 	 * @see Base\Model\Component\Core.Element::preRender()
 	 */
 	protected function preRender()
 	{
 		// ajout du plugin filter ne fonctionne pas en 4.2.1
-		// $this->addOption('features', "[{ftype:'filters', local:true, encode:false,filters:[{type:'string', dataIndex:'name'}]}]", true);
+		// $this->addOption('features', "[{ftype:'filters', local:true, filters:[{type:'string', dataIndex:'name'}]}]", true);
 		// $this->addOption('loadMask', 'true', true);
+		
+		if(count($this->getFilters())>0)
+		{
+			$conf = new Config();
+			$conf->addAttribute('ftype', 'filters');
+			$conf->addAttribute('local', 'true', true);
+			$conf->addAttribute('filters', $this->getFilters(), true);
+			$this->addFeature($conf);
+		}
 		
 		if($this->features) $this->addOption('features', $this->getFeatures(), true);
 		parent::preRender();
@@ -178,6 +220,13 @@ class Grid extends Panel
 		
 		$this->addOption('columns', $this->getColumns(), true);
 	}
+	/**
+	 * Behavior de sauvegarde
+	 * @param string $url
+	 * @param string $method POST OU GET
+	 * @param Behavior $success en cas de success
+	 * @param Behavior $failure en cas d'échec
+	 */
 	public function bSave($url, $method='POST', Behavior $success=null, Behavior $failure=null)
 	{
 		$fields = array();
@@ -187,14 +236,26 @@ class Grid extends Panel
 		}
 		return new Behavior("Ext.Ajax.request({method:'$method',url: '$url',params: { ".implode(',',$fields)." }, success:function(response, opts){ $success }, failure:function(response, opts){ $failure }});");
 	}
+	/**
+	 * retourne le champ de la selection
+	 * @param string $field
+	 */
 	public function bGetSelectionField($field)
 	{
 		return new Behavior($this.".getSelectionModel().getLastSelected().get('$field')");
 	}
+	/**
+	 * retourne la selection (1 seul)
+	 * @return Behavior
+	 */
 	public function bGetSelection()
 	{
 		return new Behavior($this.'.getSelectionModel().getLastSelected().getData()');
 	}
+	/**
+	 * retourne toute la selection
+	 * @return Behavior
+	 */
 	public function bGetSelections()
 	{
 		return new Behavior($this.'.getSelectionModel().getSelection()');

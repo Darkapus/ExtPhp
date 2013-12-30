@@ -58,17 +58,17 @@ class EditableGrid extends Grid
 	public function preRender()
 	{
 		parent::preRender();
-		DEV && error_log('pre rendu done');
+		getenv('APPLICATION_ENV')=='development'  && error_log('pre rendu done');
 		
 		// on fait le rendu du cell editing
 		$this->getEditor()->render();
-		DEV && error_log('editeur rendu');
+		getenv('APPLICATION_ENV')=='development'  && error_log('editeur rendu');
 		
 		foreach($this->getColumnElements() as $element)
 		{
 			$element->render();
 		}
-		DEV && error_log('elements rendus');
+		getenv('APPLICATION_ENV')=='development'  && error_log('elements rendus');
 		
 	} 
 	public function getColumnElements()
@@ -101,9 +101,9 @@ class EditableGrid extends Grid
 			array_push($this->elements, $element);
 		}
 		
-		if(method_exists($element, 'getStore') && get_class($element->getStore())=='Base\Model\Component\Store\JsonStorage')
+		if(method_exists($element, 'getStore'))
 		{
-			$col->setDataView("if(value==null) return '<font style=\'color:#ccc\'>Aucun'; try{ var val='<b>'+".$element->getStore().".getById(value).get(".$element->getOption('displayField').")+'</b>'; return val; }catch(err){ return '<i>Non chargé</i>';} ");
+			$col->setDataView("if(value==null) return '<font style=\'color:#ccc\'>Aucun'; try{ var val='<b>'+".$element->getStore().".findRecord(".$element->getOption('valueField').", value).get(".$element->getOption('displayField').")+'</b>'; return val; }catch(err){ return '<i>Non chargé</i>';} ");
 		}
 		
 		return $col;

@@ -1,32 +1,41 @@
 <?php
 namespace Base\Model\Component\Panel\Editor;
+use Base\Model\Component\Panel\Grid;
+
 use Base\Model\Component\Core\ExtGenerator;
 
 use Base\Model\Component\Core\Config;
 
 class Column extends Config
 {
-	protected $filter = null;
-	public function __construct()
+	protected $grid;
+	public function __construct($grid)
 	{
-		$this->filter = new Config();
+		$this->grid = $grid;
 	}
+	/**
+	 * @return Grid
+	 */
+	public function getGrid()
+	{
+		return $this->grid;
+	}
+	/**
+	 * modification à la volée du contenu
+	 * @param Behavior $return_code
+	 */
 	public function setDataView($return_code)
 	{
 		$this->addAttribute('renderer',"function(value,meta){ $return_code; }", true);
 		return $this;
 	}
-	public function getFilter()
-	{
-		return $this->filter;
-	}
+	/**
+	 * permet la definition d'un filtre sur la colonne
+	 * @param string $type
+	 */
 	public function setFilter($type)
 	{
-		ExtGenerator::i()->addRequire('Ext.ux.grid.FiltersFeature');
-		
-		$this->addAttribute('filter', $this->getFilter());
-		$this->getFilter()->addAttribute('type', $type);
-		
+		$this->getGrid()->addFilter($this, $type);	
 		return $this;
 	}
 }
